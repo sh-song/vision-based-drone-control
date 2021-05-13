@@ -4,8 +4,8 @@ import asyncio
 from mavsdk import System
 from mavsdk.offboard import (OffboardError, PositionNedYaw)
 
-
-class Mooyaho:
+# Drone
+class Controller:
     
     def __init__(self):
         
@@ -72,22 +72,3 @@ class Mooyaho:
 
     
 
-
-async def run(moo):
-    """ Does Offboard control using position NED coordinates. """
-
-    await moo.connect()
-    await asyncio.sleep(3)
-    await moo.move()
-    await asyncio.sleep(10)
-
-    await moo.land()
-    await asyncio.sleep(3)
-    
-
-
-if __name__ == "__main__":
-    moo = Mooyaho()
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(run(moo))
-   
