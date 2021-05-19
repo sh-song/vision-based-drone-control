@@ -25,7 +25,7 @@ async def run():
         print("-- Disarming")
         await drone.action.disarm()
         return
-    
+     
 
     await drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -5.0, 0.0))
     await asyncio.sleep(7)
