@@ -1,3 +1,3 @@
 # vision-based-drone-control
 
-![chart](vbdc.png)
+![chart](./vbdc.png)
