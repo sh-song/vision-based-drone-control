@@ -2,7 +2,7 @@
 import asyncio
 
 from mavsdk import System
-from mavsdk.offboard import (OffboardError, PositionNedYaw)
+from mavsdk.offboard import (OffboardError, PositionNedYaw, VelocityNedYaw)
 
 # Drone
 class Controller():
@@ -38,10 +38,11 @@ class Controller():
             await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, 0.0, 0.0))
 
 
+
+    async def cctv_proto(self):
         
-    async def move(self):
-        
-        print("Controller: MOVE!")
+        print("Controller: CCTV!")
+        des = [self.data['des_n'], self.data['des_e'], self.data['des_d'], self.data['des_yaw']]
 
         
         await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -2.0, 0.0))
@@ -60,12 +61,32 @@ class Controller():
         await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -2.0, 360))
         await asyncio.sleep(rotation_time)
 
+    async def move(self):
         
+        des = [self.data['des_n'], self.data['des_e'], self.data['des_d'], self.data['des_yaw']]
+        print("Controller: Move to ", des[0], des[1], des[2], des[3])
+
+        rotation_time = 1
+        await self.drone.offboard.set_position_ned(PositionNedYaw(des[0], des[1], des[2], des[3]))
+        await asyncio.sleep(rotation_time)
+       
         
     async def bottom_follow(self):
         print("Controller: TRACK!========")
         
+    async def parking(self):
+        print("Controller: Parking!========")
+        await self.drone.offboard.set_velocity_ned(VelocityNedYaw(1, 1, 0, 0))
+        await asyncio.sleep(2)
+        
+        await self.drone.offboard.set_velocity_ned(VelocityNedYaw(0, 0, 0, 0))
+        await asyncio.sleep(2)
+        
+        #print(await self.drone.telemetry.gps_info())
+        print("HELP!!")
+        await asyncio.sleep(2)
     
+
         
     async def land(self):
         print("Controller: LAND!=======")
