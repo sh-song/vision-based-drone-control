@@ -11,6 +11,10 @@ class Planner:
         self.data = master.data
 
 
+    def set_desired_status(self, n, e, d, yaw):
+        self.data['des_n'], self.data['des_e'], self.data['des_d'], self.data['des_yaw'] = n, e, d, yaw
+        
+    
     async def run(self, d):
 
         await d.connect()
@@ -23,16 +27,25 @@ class Planner:
                 print('Planner: No Mission...')
                 await d.waiting()
                 
-                
             elif mission == 'cctv':
                 print("Planner: Mission CCTV")            
-                await d.move()
+                await d.cctv_proto()
                 
                 #await asyncio.sleep(5)
                 
             elif mission == 'land':
                 print("Planner: Mission Land")
                 break
+            
+            elif mission == 'parking':
+                print("Planner: Mission Parking")
+                await d.parking()
+            
+            elif mission == 'manual':
+                print("Planner: Manual flight mode")
+                self.set_desired_status(2, 2, 2, 2)
+                await d.move()
+                
                 
             else:
                 print('Planner: Invalid Mission')
