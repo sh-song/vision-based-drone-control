@@ -11,7 +11,7 @@ async def run():
     drone = System()
     await drone.connect(system_address="udp://:14540")
 
-    print("-- Arming")
+    print("-- Arminggg")
     await drone.action.arm()
 
     print("-- Setting initial setpoint")
