@@ -39,6 +39,11 @@ class Planner:
             
             elif mission == 'parking':
                 print("Planner: Mission Parking")
+
+                self.data['des_n'] = int(input('des_n: '))
+                self.data['des_e'] = int(input('des_e: '))
+                self.data['des_d'] = int(input('des_d: '))
+
                 await d.parking()
             
             elif mission == 'manual':
