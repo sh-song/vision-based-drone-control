@@ -37,8 +37,6 @@ class Controller():
             await self.drone.action.arm()
             await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, 0.0, 0.0))
 
-
-
     async def cctv_proto(self):
         
         print("Controller: CCTV!")
@@ -71,20 +69,26 @@ class Controller():
         await asyncio.sleep(rotation_time)
        
         
-    async def bottom_follow(self):
-        print("Controller: TRACK!========")
-        
     async def parking(self):
         print("Controller: Parking!========")
-        await self.drone.offboard.set_velocity_ned(VelocityNedYaw(1, 1, 0, 0))
+        div = 400
+        tick = 1
+
+        x, y, z = self.data['des_n'] / div, \
+                  self.data['des_e'] / div, \
+                  self.data['des_d'] / div
+
+        print("Move x, y : ", x, y)
+        await self.drone.offboard.set_velocity_ned(VelocityNedYaw(x*tick, y*tick, 0, 0))
         await asyncio.sleep(2)
         
+        print("Move z: ", z)
+        await self.drone.offboard.set_velocity_ned(VelocityNedYaw(0, 0, z, 0))
+        await asyncio.sleep(2)
+
         await self.drone.offboard.set_velocity_ned(VelocityNedYaw(0, 0, 0, 0))
-        await asyncio.sleep(2)
-        
-        #print(await self.drone.telemetry.gps_info())
-        print("HELP!!")
-        await asyncio.sleep(2)
+        await asyncio.sleep(1)
+
     
 
         
