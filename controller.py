@@ -37,27 +37,42 @@ class Controller():
             await self.drone.action.arm()
             await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, 0.0, 0.0))
 
-    async def cctv_proto(self):
+    async def cctv_test(self):
         
-        print("Controller: CCTV!")
+        print("Controller: CCTV TEST!")
         des = [self.data['des_n'], self.data['des_e'], self.data['des_d'], self.data['des_yaw']]
 
         
-        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -2.0, 0.0))
+        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -0.5, 0.0))
         await asyncio.sleep(1)
 
         rotation_time = 1
-        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -2.0, 90))
+        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -0.5, 90))
         await asyncio.sleep(rotation_time)
 
-        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -2.0, 180))
+        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -0.5, 180))
         await asyncio.sleep(rotation_time)
 
-        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -2.0, 270))
+        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -0.5, 270))
         await asyncio.sleep(rotation_time)
     
-        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -2.0, 360))
+        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -0.5, 360))
         await asyncio.sleep(rotation_time)
+
+    async def cctv(self):
+        
+        kp = 1/180
+        print("Controller: CCTV!")
+        center = self.data['center_pixel']
+        
+        self.data['des_yaw'] = self.data['cur_yaw'] + kp*center
+
+        rotation_time = 0.3
+        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -0.3, self.data['des_yaw']))
+        await asyncio.sleep(rotation_time)
+        
+        self.data['cur_yaw'] = self.data['des_yaw']
+
 
     async def move(self):
         

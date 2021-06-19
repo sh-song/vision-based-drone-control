@@ -27,12 +27,16 @@ class Planner:
                 print('Planner: No Mission...')
                 await d.waiting()
                 
-            elif mission == 'cctv':
-                print("Planner: Mission CCTV")            
-                await d.cctv_proto()
+            elif mission == 'cctv_test':
+                print("Planner: Mission CCTV TEST")            
+                await d.cctv_test()
                 
                 #await asyncio.sleep(5)
                 
+            elif mission == 'cctv':
+                print("Planner: Mission CCTV")            
+                await d.cctv()
+
             elif mission == 'land':
                 print("Planner: Mission Land")
                 break
