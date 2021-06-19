@@ -28,8 +28,8 @@ class Communicator:
             
             
     def angle_write(self, msg):
-        self.data['des_angle'] = msg.y
-        print("msg.y:", msg.y)
+        self.data['center_pixel'] = msg.x #-640~+640
+        print("msg.x:", msg.x)
     
 
 
