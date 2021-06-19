@@ -21,17 +21,18 @@ class Master():
             'cur_e':0, \
             'cur_d':0, \
             'cur_yaw':0, \
-            'mission':'None' \
+            'mission':'None', \
+            'des_angle':0
             }
         
-        self.planner = Planner(self)
-        print('===Planner Start!')
+        # self.planner = Planner(self)
+        # print('===Planner Start!')
 
-        self.controller = Controller(self)
-        print('===Controller Start!')
+        # self.controller = Controller(self)
+        # print('===Controller Start!')
 
-        loop = asyncio.get_event_loop()
-        print('===Loop Start!')
+        # loop = asyncio.get_event_loop()
+        # print('===Loop Start!')
         
         self.communicator = Communicator(self)
         th_communicator = threading.Thread(target=self.communicator.run, args=())
@@ -40,7 +41,7 @@ class Master():
 
 
 
-        loop.run_until_complete(self.planner.run(self.controller))
+        # loop.run_until_complete(self.planner.run(self.controller))
 
         
         

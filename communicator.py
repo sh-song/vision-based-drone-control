@@ -3,6 +3,7 @@
 import rospy
 from nav_msgs.msg import Odometry
 from std_msgs.msg import String
+from geometry_msgs.msg import Point
 
 
 
@@ -25,12 +26,20 @@ class Communicator:
             self.pub.publish(self.msg)
             rate.sleep()
             
+            
+    def angle_write(self, msg):
+        self.data['des_angle'] = msg.y
+        print("msg.y:", msg.y)
+    
+
 
     
     def run(self):
         #rate = rospy.Rate(1) #1hz
         
         rospy.Subscriber('/gc_order', String, self.mission_write)
+        rospy.Subscriber('/mission_mode/mission', Point, self.angle_write)
+
         self.publish_info()
         rospy.spin()
 
