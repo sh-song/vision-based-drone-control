@@ -4,11 +4,13 @@ import asyncio
 from mavsdk import System
 from mavsdk.offboard import (OffboardError, PositionNedYaw, VelocityNedYaw)
 
+import numpy as np
+from numpy.linalg import norm
 # Drone
 class Controller():
     
     def __init__(self, master):
-        self.data = master.data
+        self.status = master.status
         self.drone = System()
         
     async def connect(self):
@@ -22,7 +24,7 @@ class Controller():
         print("Controller: Setting initial setpoint")
         await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, 0.0, 0.0))
 
-        self.data['is_on'] = True
+        self.status['is_on'] = True
         
         print("Controller: Starting offboard")
         try:
@@ -40,7 +42,7 @@ class Controller():
     async def cctv_test(self):
         
         print("Controller: CCTV TEST!")
-        des = [self.data['des_n'], self.data['des_e'], self.data['des_d'], self.data['des_yaw']]
+        des = [self.status['des_n'], self.status['des_e'], self.status['des_d'], self.status['des_yaw']]
 
         
         await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -0.5, 0.0))
@@ -61,22 +63,22 @@ class Controller():
 
     async def cctv(self):
         
-        kp = 1/180
+        kp = 0.05
         print("Controller: CCTV!")
-        center = self.data['center_pixel']
-        
-        self.data['des_yaw'] = self.data['cur_yaw'] + kp*center
-
+        center = self.status['center_pixel']
+        print('center', center)
+        self.status['des_yaw'] = self.status['cur_yaw'] + kp*center
+        print('desyaw', self.status['des_yaw'])
         rotation_time = 0.3
-        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -0.3, self.data['des_yaw']))
+        await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -2.0, self.status['des_yaw']))
         await asyncio.sleep(rotation_time)
         
-        self.data['cur_yaw'] = self.data['des_yaw']
+        self.status['cur_yaw'] = self.status['des_yaw']
 
 
     async def move(self):
         
-        des = [self.data['des_n'], self.data['des_e'], self.data['des_d'], self.data['des_yaw']]
+        des = [self.status['des_n'], self.status['des_e'], self.status['des_d'], self.status['des_yaw']]
         print("Controller: Move to ", des[0], des[1], des[2], des[3])
 
         rotation_time = 1
@@ -89,9 +91,9 @@ class Controller():
         div = 400
         tick = 1
 
-        x, y, z = self.data['des_n'] / div, \
-                  self.data['des_e'] / div, \
-                  self.data['des_d'] / div
+        x, y, z = self.status['des_n'] / div, \
+                  self.status['des_e'] / div, \
+                  self.status['des_d'] / div
 
         print("Move x, y : ", x, y)
         await self.drone.offboard.set_velocity_ned(VelocityNedYaw(x*tick, y*tick, 0, 0))
@@ -124,4 +126,26 @@ class Controller():
 
     
 
+
+    async def move_to_position(self, n, e, d, yaw, target_speed):
+
+        distance = norm(np.array([n, e, d]))
+        
+        #TODO target speed will be obtained from PID controller using distance
+        
+        t = distance / target_speed
+        
+        v_north = n / t
+        v_east = e / t
+        v_down = d / t #(d + self.status.altitude) / t
+                        
+        await self.drone.offboard.set_velocity_ned(VelocityNedYaw(v_north, v_east, v_down, yaw))
+        await asyncio.sleep(t)
+        await self.drone.offboard.set_velocity_ned(VelocityNedYaw(0.0, 0.0, 0.0, yaw))
+        await asyncio.sleep(1)
+      
+
+
+
+    move_to_position
 

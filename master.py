@@ -12,7 +12,7 @@ from communicator import Communicator
 class Master():
     
     def __init__(self):
-        self.data = {
+        self.status = {
             'des_n':0, \
             'des_e':0, \
             'des_d':0, \
@@ -41,7 +41,7 @@ class Master():
 
 
 
-        # loop.run_until_complete(self.planner.run(self.controller))
+        loop.run_until_complete(self.planner.run(self.controller))
 
         
         

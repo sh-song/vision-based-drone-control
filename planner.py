@@ -49,6 +49,12 @@ class Planner:
                 self.data['des_d'] = int(input('des_d: '))
 
                 await d.parking()
+                
+            elif mission == 'moving_test':
+                print("Planner: Mission moving_test")
+
+                await d.move_to_position(10, 10, 10, 10)
+                
             
             elif mission == 'manual':
                 print("Planner: Manual flight mode")

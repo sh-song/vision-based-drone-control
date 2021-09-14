@@ -9,26 +9,26 @@ from geometry_msgs.msg import Point
 
 class Communicator:
     def __init__(self, master):
-        self.data = master.data
+        self.status = master.status
         self.pub = rospy.Publisher('/drone', String, queue_size = 1)
         self.msg = String() 
         rospy.init_node('Drone', anonymous=False)
 
     
     def mission_write(self, msg):
-        self.data['mission'] = msg.data
+        self.status['mission'] = msg.data
         print("=====New Mission Received: ", msg, '=====')
         
     def publish_info(self):
         rate = rospy.Rate(1) #1hz
         while not rospy.is_shutdown():
-            self.msg = self.data['mission']
+            self.msg = self.status['mission']
             self.pub.publish(self.msg)
             rate.sleep()
             
             
     def angle_write(self, msg):
-        self.data['center_pixel'] = msg.x #-640~+640
+        self.status['center_pixel'] = msg.x #-640~+640
         print("msg.x:", msg.x)
     
 
@@ -38,7 +38,7 @@ class Communicator:
         #rate = rospy.Rate(1) #1hz
         
         rospy.Subscriber('/gc_order', String, self.mission_write)
-        rospy.Subscriber('/mission_mode/mission', Point, self.angle_write)
+        rospy.Subscriber('/mission_mode/mission1', Point, self.angle_write)
 
         self.publish_info()
         rospy.spin()
