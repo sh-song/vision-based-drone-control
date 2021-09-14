@@ -1,5 +1,6 @@
 import rospy
 from std_msgs.msg import String
+from sig_int_handler import SigIntHandler
 
 class GroundControl:
     
@@ -25,8 +26,11 @@ class GroundControl:
         
 
 if __name__ == '__main__':
-    gc = GroundControl()
+    SI = SigIntHandler()
+    SI.run()
+    gc = GroundControl()        
+
     try:
         gc.run()
     except rospy.ROSInterruptException:
-        pass
+        exit(0)

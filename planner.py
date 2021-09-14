@@ -8,11 +8,11 @@ from mavsdk.offboard import (OffboardError, PositionNedYaw)
 class Planner:
     
     def __init__(self, master):
-        self.data = master.data
+        self.status = master.status
 
 
     def set_desired_status(self, n, e, d, yaw):
-        self.data['des_n'], self.data['des_e'], self.data['des_d'], self.data['des_yaw'] = n, e, d, yaw
+        self.status['des_n'], self.status['des_e'], self.status['des_d'], self.status['des_yaw'] = n, e, d, yaw
         
     
     async def run(self, d):
@@ -20,8 +20,8 @@ class Planner:
         await d.connect()
         await asyncio.sleep(3)
 
-        while self.data['is_on'] is True:
-            mission = self.data['mission']
+        while self.status['is_on'] is True:
+            mission = self.status['mission']
 
             if mission == 'None':
                 print('Planner: No Mission...')
@@ -44,9 +44,9 @@ class Planner:
             elif mission == 'parking':
                 print("Planner: Mission Parking")
 
-                self.data['des_n'] = int(input('des_n: '))
-                self.data['des_e'] = int(input('des_e: '))
-                self.data['des_d'] = int(input('des_d: '))
+                self.status['des_n'] = int(input('des_n: '))
+                self.status['des_e'] = int(input('des_e: '))
+                self.status['des_d'] = int(input('des_d: '))
 
                 await d.parking()
                 

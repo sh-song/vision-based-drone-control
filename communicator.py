@@ -32,8 +32,6 @@ class Communicator:
         print("msg.x:", msg.x)
     
 
-
-    
     def run(self):
         #rate = rospy.Rate(1) #1hz
         

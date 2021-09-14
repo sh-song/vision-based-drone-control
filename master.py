@@ -8,7 +8,9 @@ from mavsdk.offboard import (OffboardError, PositionNedYaw)
 from planner import Planner
 from controller import Controller
 from communicator import Communicator
+from sig_int_handler import SigIntHandler
 
+import signal
 class Master():
     
     def __init__(self):
@@ -24,6 +26,9 @@ class Master():
             'mission':'None', \
             'center_pixel':0 \
             }
+        
+        SI = SigIntHandler()
+        SI.run()
         
         self.planner = Planner(self)
         print('===Planner Start!')
